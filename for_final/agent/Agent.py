@@ -299,11 +299,12 @@ def initialize(obss):
     for i in range(10):
         row = []
         for j in range(20):
-            cell = int(board[j][i])
             if board[j][i] == 0.7:
-                cell = int(0)
+                cell = 0
             elif board[j][i] == 0.3:
-                cell = int(3)
+                cell = 3
+            else:
+                cell = int(board[j][i])
             row.append(cell)
         grid.append(row[:])
     return grid
