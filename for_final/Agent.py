@@ -260,18 +260,21 @@ def get_para_from_state(board):
     heights = []
     holes = []
     for row in range(WIDTH_BOARD):
+        height_row = 0
         for col in range(DEPTH_BOARD):
             if board[row][col] == 1:
-                heights.append(DEPTH_BOARD-col)
+                height_row = DEPTH_BOARD - col
                 n_hol_in_col = 0
                 for col_hole in range(col+1, DEPTH_BOARD):
                     if board[row][col_hole] == 0:
                         n_hol_in_col += 1
                 holes.append(n_hol_in_col)
                 break
+        heights.append(height_row)
 
     # height sum
     height_sum = sum(heights)
+    print(heights)
     # diff sum
     diff_sum = 0
     for i in range(1, len(heights)):
