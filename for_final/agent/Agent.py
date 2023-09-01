@@ -91,6 +91,8 @@ def check_collision(board, piece, px, py):
     # px is num of col in board
     # py is num of row in board
     full_pos = get_full_pos(piece)
+    if len(full_pos) == 0:
+        return True
     for pos in full_pos:
         x = pos[0]
         y = pos[1]
@@ -114,7 +116,7 @@ def check_collision(board, piece, px, py):
 def depth_drop(board, piece, px, py):
     depth = 0
     while True:
-        if check_collision(board, piece, px, py + depth):
+        if check_collision(board, piece, px, py + depth) == True:
             break
         depth += 1
     depth -= 1
@@ -182,7 +184,6 @@ class Tetris:
 
         # end game
         self.done = False
-
     def new_block(self):
         self.current_block = PIECES_COLLECTION[random.randint(0, len(PIECES_COLLECTION) - 1)]
         self.px = 4
@@ -203,7 +204,7 @@ class Tetris:
         self.board = new_board
         self.clear()
         self.new_block()
-        return self.board, self.done
+        return new_board, self.done
 
     def move(self, action):
         # 5: right  ~ +1
@@ -237,10 +238,9 @@ class Tetris:
         block = []
         for row in range(row_start, row_end + 1):
             block.append(only_current_block[row][col_start:(col_end + 1)])
-        self.current_block = block
+        self.current_block = deepcopy(block)
         self.px = row_start
         self.board = board
-
     def clear(self):
         clear = 0
         for col in range(DEPTH_BOARD):
@@ -259,20 +259,19 @@ class Tetris:
 def get_para_from_state(board):
     heights = []
     holes = []
-    for row in range(len(board)):
-        for col in range(len(board[0])):
+    for row in range(WIDTH_BOARD):
+        for col in range(DEPTH_BOARD):
             if board[row][col] == 1:
-                heights.append(len(board)-col)
+                heights.append(DEPTH_BOARD-col)
                 n_hol_in_col = 0
-                for cell in board[0][col+1:]:
-                    if cell == 1:
+                for col_hole in range(col+1, DEPTH_BOARD):
+                    if board[row][col_hole] == 0:
                         n_hol_in_col += 1
                 holes.append(n_hol_in_col)
                 break
 
     # height sum
     height_sum = sum(heights)
-
     # diff sum
     diff_sum = 0
     for i in range(1, len(heights)):
@@ -295,13 +294,12 @@ def initialize(obss):
         for j in range(0, 10):
             row.append(obss[i][j][0])
         board.append(row[:])
-
     for i in range(10):
         row = []
         for j in range(20):
-            if board[j][i] == 0.7:
+            if board[j][i] == np.float32(0.7):
                 cell = 0
-            elif board[j][i] == 0.3:
+            elif board[j][i] == np.float32(0.3):
                 cell = 3
             else:
                 cell = int(board[j][i])
@@ -367,8 +365,11 @@ def get_best_move(board, chromosome, rotate):
         if cur_rating > best:
             best = cur_rating
             best_list = cur_list
-    for _ in range(rotate):
-        best_list.insert(0, 4)
+    if rotate == 3:
+        best_list.insert(0, 3)
+    else:
+        for _ in range(rotate):
+            best_list.insert(0, 4)
     return best_list, best
 
 
@@ -380,17 +381,13 @@ class Agent:
         self.list_move = []
         self.chromosome = {
             'height_sum': -1.3102745737267214, 'diff_sum': -0.6242034265122209,
-            'max_height': -0.01353979396793048, 'holes': -1.8486670208765474,
-            'cleared': 1.822646282925221, 'n_used_block': 1.2444244557243431,
-            'eval': 4224}
+                           'max_height': -0.01353979396793048, 'holes': -1.8486670208765474,
+                           'cleared': 1.822646282925221, 'n_used_block': 1.2444244557243431,
+                           'eval': 4224}
         self.rotate_left = 0
         self.best_score = -500000
-        self.start = 0
 
     def choose_action(self, obs):
-        if self.start == 0:
-            self.start += 1
-            return 0
         if self.rotate_left < 4:
             fixed_board = initialize(obs)
             best_list, best = get_best_move(fixed_board, self.chromosome, self.rotate_left)
@@ -407,40 +404,3 @@ class Agent:
             self.best_score = -50000
         return action
 
-"""
-obs = [
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0.3, 0.3, 0.3, 0, 0, 0]
-]
-
-agent = Agent(0)
-print(agent.choose_action(obs))
-print(agent.choose_action(obs))
-print(agent.choose_action(obs))
-print(agent.choose_action(obs))
-print(agent.choose_action(obs))
-print(agent.choose_action(obs))
-print(agent.choose_action(obs))
-print(agent.choose_action(obs))
-print(agent.choose_action(obs))
-print(agent.choose_action(obs))
-print(agent.choose_action(obs))
-"""

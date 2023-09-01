@@ -91,6 +91,8 @@ def check_collision(board, piece, px, py):
     # px is num of col in board
     # py is num of row in board
     full_pos = get_full_pos(piece)
+    if len(full_pos) == 0:
+        return True
     for pos in full_pos:
         x = pos[0]
         y = pos[1]
@@ -114,7 +116,7 @@ def check_collision(board, piece, px, py):
 def depth_drop(board, piece, px, py):
     depth = 0
     while True:
-        if check_collision(board, piece, px, py + depth):
+        if check_collision(board, piece, px, py + depth) == True:
             break
         depth += 1
     depth -= 1
@@ -182,7 +184,6 @@ class Tetris:
 
         # end game
         self.done = False
-
     def new_block(self):
         self.current_block = PIECES_COLLECTION[random.randint(0, len(PIECES_COLLECTION) - 1)]
         self.px = 4
@@ -237,10 +238,9 @@ class Tetris:
         block = []
         for row in range(row_start, row_end + 1):
             block.append(only_current_block[row][col_start:(col_end + 1)])
-        self.current_block = block
+        self.current_block = deepcopy(block)
         self.px = row_start
         self.board = board
-
     def clear(self):
         clear = 0
         for col in range(DEPTH_BOARD):
@@ -259,20 +259,19 @@ class Tetris:
 def get_para_from_state(board):
     heights = []
     holes = []
-    for row in range(len(board)):
-        for col in range(len(board[0])):
+    for row in range(WIDTH_BOARD):
+        for col in range(DEPTH_BOARD):
             if board[row][col] == 1:
-                heights.append(len(board)-col)
+                heights.append(DEPTH_BOARD-col)
                 n_hol_in_col = 0
-                for cell in board[0][col+1:]:
-                    if cell == 1:
+                for col_hole in range(col+1, DEPTH_BOARD):
+                    if board[row][col_hole] == 0:
                         n_hol_in_col += 1
                 holes.append(n_hol_in_col)
                 break
 
     # height sum
     height_sum = sum(heights)
-
     # diff sum
     diff_sum = 0
     for i in range(1, len(heights)):
@@ -289,25 +288,28 @@ def get_para_from_state(board):
 def initialize(obss):
     # initialize
     grid = []
-    for i in range(10):
+    board = []
+    for i in range(20):
         row = []
-        for j in range(0, 20):
-            cell = int(obss[j][i][0])
-            if obss[j][i][0] == 0.7:
-                cell = int(0)
-            elif obss[j][i][0] == 0.3:
-                cell = int(3)
-            row.append(cell)
-        grid.append(row)
+        for j in range(0, 10):
+            row.append(obss[i][j][0])
+        board.append(row[:])
+    for i in range(10):
+        new_row = []
+        for j in range(20):
+            if board[j][i] == np.float32(0.7):
+                cell = 0
+            elif board[j][i] == np.float32(0.3):
+                cell = 3
+            else:
+                cell = int(board[j][i])
+            new_row.append(cell)
+        grid.append(new_row[:])
     return grid
 
 
-def get_a_possible_move_list(right=0, left=0, rot_right=0, rot_left=0):
+def get_a_possible_move_list(right=0, left=0):
     a_possible_move_list = []
-    for _ in range(rot_left):
-        a_possible_move_list.append(4)
-    for _ in range(rot_right):
-        a_possible_move_list.append(3)
     for _ in range(right):
         a_possible_move_list.append(5)
     for _ in range(left):
@@ -320,6 +322,7 @@ def get_rating_from_move(grid, list_move, chromosome):
     tetris = Tetris(grid)
     done = False
     state_board = tetris.board
+    print(state_board)
     for one_move in list_move:
         state_board, done = tetris.move(one_move)
     height_sum, diff_sum, max_height, holes = get_para_from_state(state_board)
@@ -363,8 +366,11 @@ def get_best_move(board, chromosome, rotate):
         if cur_rating > best:
             best = cur_rating
             best_list = cur_list
-    for _ in range(rotate):
-        best_list.insert(0, 4)
+    if rotate == 3:
+        best_list.insert(0, 3)
+    else:
+        for _ in range(rotate):
+            best_list.insert(0, 4)
     return best_list, best
 
 
@@ -385,9 +391,12 @@ class Agent:
     def choose_action(self, obs):
         if self.rotate_left < 4:
             fixed_board = initialize(obs)
+            print(np.transpose(fixed_board))
+
             best_list, best = get_best_move(fixed_board, self.chromosome, self.rotate_left)
+            print("")
             if best > self.best_score:
-                self.list_move = best_list
+                self.list_move = deepcopy(best_list)
                 self.best_score = best
             self.rotate_left += 1
             return 4
@@ -399,3 +408,29 @@ class Agent:
             self.best_score = -50000
         return action
 
+
+from tetris_env import TetrisSingleEnv
+"""
+env = TetrisSingleEnv()
+state = env.reset()
+agent = Agent(0)
+done = False
+for _ in range(50):
+    if done:
+        break
+    action = agent.choose_action(state)
+    state, _, done, inf = env.step(action)
+"""
+
+bo = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1]]
+a,b,c,d = get_para_from_state(bo)
+print(a,b,c,d)
