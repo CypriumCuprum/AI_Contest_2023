@@ -184,6 +184,7 @@ class Tetris:
 
         # end game
         self.done = False
+
     def new_block(self):
         self.current_block = PIECES_COLLECTION[random.randint(0, len(PIECES_COLLECTION) - 1)]
         self.px = 4
@@ -241,6 +242,7 @@ class Tetris:
         self.current_block = deepcopy(block)
         self.px = row_start
         self.board = board
+
     def clear(self):
         clear = 0
         for col in range(DEPTH_BOARD):

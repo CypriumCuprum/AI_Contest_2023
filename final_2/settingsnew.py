@@ -1,3 +1,4 @@
+import random
 
 START_IN_ROW = 4
 START_IN_COL = 2
@@ -99,7 +100,9 @@ T_PIECES = [
      [0, 1, 0]]
 ]
 
-PIECES_COLLECTION = I_PIECES + S_PIECES + O_PIECES + Z_PIECES + L_PIECES + J_PIECES
+NUM_PIECES =[1, 2, 3, 4, 5, 6, 7]
+MAP_NUM_PIECE = {1: I_PIECES, 2: S_PIECES, 3: O_PIECES, 4: Z_PIECES, 5: L_PIECES, 6: J_PIECES, 7: T_PIECES}
+PIECES_COLLECTION = I_PIECES + S_PIECES + O_PIECES + Z_PIECES + L_PIECES + J_PIECES + T_PIECES
 
 
 TEST_GRID = [
@@ -114,3 +117,4 @@ TEST_GRID = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
+

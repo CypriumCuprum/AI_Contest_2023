@@ -16,7 +16,7 @@ I: [[1,1,1,1]]
 T:
 [[0,1,0]        
  [1,1,1]]
-
+ 
 [[0,1]
  [1,1] 
  [0,1]]
@@ -25,15 +25,15 @@ T:
 L:
 [[0,0,1]
  [1,1,1]]
-
+ 
 J:
 [[1,0,0]
  [1,1,1]]
-
+ 
 O:
 [[1,1]
  [1,1]]
-
+ 
 Z:
 [[1,1,0]
  [0,1,1]]
@@ -121,7 +121,7 @@ def get_a_possible_move_list(right=0, left=0):
 """
 GRID SAMPLE
 
-
+ 
  |   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
  |   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
  |   [0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3], 
@@ -279,8 +279,8 @@ class Tetris:
         cleared_num = self.cleared
 
         # pit hole percent
-        pit = (WIDTH_BOARD * DEPTH_BOARD - height_sum)
-        pit_hole_percent = pit / (pit + hole_sum)
+        pit = (WIDTH_BOARD*DEPTH_BOARD - height_sum)
+        pit_hole_percent = pit/(pit+hole_sum)
 
         return [height_sum, diff_sum, max_height, hole_sum, deepest_unfilled,
                 blocks, col_holes, cleared_num, pit_hole_percent]
@@ -289,13 +289,9 @@ class Tetris:
         max_left = self.px
         max_right = WIDTH_BOARD - self.px - len(self.current_block)
         full_move = []
-        for i in range(0, max_left + 1):
+        for i in range(0, max_left+1):
             full_move.append(get_a_possible_move_list(left=i))
-        for i in range(1, max_right + 1):
+        for i in range(1, max_right+1):
             full_move.append(get_a_possible_move_list(right=i))
         return full_move
-
-
-
-
 
