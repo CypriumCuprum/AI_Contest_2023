@@ -311,6 +311,13 @@ def initialize(obss):
     return grid
 
 
+def get_max_left(board):
+    tetris = Tetris(board)
+    max_left = tetris.px
+    max_right = WIDTH_BOARD - len(tetris.current_block) - max_left
+    return max_left, max_right
+
+
 def get_a_possible_move_list(right=0, left=0):
     a_possible_move_list = []
     for _ in range(right):
@@ -349,14 +356,13 @@ def get_rating_from_move(grid, list_move, chromosome):
 
 
 def get_best_move(board, chromosome, rotate):
-    max_left = 6
-    max_right = 6
+    max_left, max_right = get_max_left(board)
     possible_move_lists = []
 
-    for i in range(1, max_left):
+    for i in range(1, max_left+1):
         possible_move_lists.append(get_a_possible_move_list(left=i))
 
-    for i in range(1, max_right):
+    for i in range(1, max_right+1):
         possible_move_lists.append(get_a_possible_move_list(right=i))
 
     best_list = []
