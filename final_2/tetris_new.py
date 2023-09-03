@@ -84,7 +84,7 @@ def check_collision(board, piece, px, py):
 def depth_drop(board, piece, px, py):
     depth = 0
     while True:
-        if check_collision(board, piece, px, py + depth) == True:
+        if check_collision(board, piece, px, py + depth) is True:
             break
         depth += 1
     depth -= 1
@@ -141,7 +141,9 @@ class Tetris:
         self.board = [[0 for j in range(DEPTH_BOARD)] for i in range(WIDTH_BOARD)]
         self.grid = grid
         self.current_block = PIECES_COLLECTION[random.randint(0, len(PIECES_COLLECTION) - 1)]
-
+        self.index_block = 7
+        self.sub_index_block = 0
+        self.next_blocks = [1, 2, 3, 4, 5]
         # Position default
         self.px = 4
         self.py = 0
@@ -163,13 +165,19 @@ class Tetris:
         self.done = False
 
     def new_block(self):
-        self.current_block = PIECES_COLLECTION[random.randint(0, len(PIECES_COLLECTION) - 1)]
+        if len(self.next_blocks) == 0:
+            blocks = deepcopy(NUM_PIECES)
+            random.shuffle(blocks)
+            self.next_blocks = blocks[:5]
+        self.index_block = self.next_blocks.pop(0)
+        self.sub_index_block = 0
+        self.current_block = MAP_NUM_PIECE[self.index_block][self.sub_index_block]
         self.px = 4
         self.py = 0
 
     def drop(self):
         depth_falling = depth_drop(board=self.board, piece=self.current_block, px=self.px, py=self.py)
-        if depth_falling == 0:
+        if depth_falling == -1:
             self.done = True
             return self.board, self.done
         self.py += depth_falling
@@ -184,19 +192,39 @@ class Tetris:
         self.new_block()
         return new_board, self.done
 
+    def rotate_right(self):
+        if self.sub_index_block == len(MAP_NUM_PIECE[self.index_block])-1:
+            self.sub_index_block = 0
+        else:
+            self.sub_index_block += 1
+        self.current_block = MAP_NUM_PIECE[self.index_block][self.sub_index_block]
+
+    def rotate_left(self):
+        if self.sub_index_block == 0:
+            self.sub_index_block = len(MAP_NUM_PIECE[self.index_block])-1
+        else:
+            self.sub_index_block -= 1
+        self.current_block = MAP_NUM_PIECE[self.index_block][self.sub_index_block]
+
     def move(self, action):
         # 5: right  ~ +1
         # 6: left   ~ -1
+        # 3: rotate right
+        # 4: rotate left
         # 2: drop
         # print(np.transpose(np.array(self.current_block)))
         if action == 2:
             return self.drop()
-        elif action == 5:
+        if action == 5:
             if not check_collision(self.board, self.current_block, px=(self.px + 1), py=self.py):
                 self.px += 1
-        elif action == 6:
+        if action == 6:
             if not check_collision(self.board, self.current_block, px=(self.px - 1), py=self.py):
                 self.px -= 1
+        if action == 3:
+            self.rotate_right()
+        if action == 4:
+            self.rotate_left()
         return self.board, self.done
 
     def get_infos_from_grid(self, grid):
