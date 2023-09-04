@@ -1,3 +1,4 @@
+import numpy
 import pygame
 import os
 import abc
@@ -10,7 +11,6 @@ from gym.utils import seeding
 import time as t
 from collections import Counter
 from copy import deepcopy
-import json
 
 #ROOT = os.path.abspath(os.path.dirname(__file__))
 
@@ -566,14 +566,49 @@ class Judge(object):
                 return Tetris_1.get_id()
             else:
                 return Tetris_1.get_id()  # no UI of draw
-
 """
 class Tetris(object):
     def __init__(self, player, gridchoice):
 
         if gridchoice == "none":
             self.o_grid = [[0] * GRID_DEPTH for i in range(GRID_WIDTH)]
+        """
+        if gridchoice == "classic":
+            self.o_grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 3],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
+        if gridchoice == "comboking":
+            self.o_grid = [[0, 0, 0, 0, 0, 5, 5, 5, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+                           [0, 0, 0, 0, 0, 6, 6, 6, 4, 5, 5, 6, 6, 6, 6, 6, 6, 6, 4, 5],
+                           [0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5],
+                           [0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5],
+                           [0, 0, 0, 0, 0, 6, 6, 6, 4, 5, 5, 6, 6, 6, 6, 6, 6, 6, 4, 5],
+                           [0, 0, 0, 0, 0, 5, 5, 5, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]]
+
+        if gridchoice == "lunchbox":
+            self.o_grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 5, 5, 5, 5, 5, 5, 5, 1],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 2, 2, 2, 2, 2, 2, 5, 1],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 2, 4, 4, 4, 4, 2, 5, 1],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 5, 2, 4, 4, 4, 4, 2, 5, 6],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 5, 2, 2, 2, 2, 2, 2, 5, 6],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 5, 5, 5, 5, 5, 5, 5, 5, 6],
+                           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6]]
+        """
         self.player = player
 
         self.reset()
@@ -1351,7 +1386,6 @@ class TetrisSingleInterface(TetrisInterface):
 
         if Tetris.check_fallen():
 
-            score = Tetris.clear()
 
             if Tetris.check_KO():
 
@@ -1366,8 +1400,24 @@ class TetrisSingleInterface(TetrisInterface):
 
         Tetris.increment_timer()
 
+        """
+        self.time = self.update_time(self.time)
+
+        if self.time <= 0:
+            reward_notdie = 0.3 * self.total_reward
+            end = 1
+
+        #        #self.renderer.drawTime2p(self.time)
+
+        # time goes until it hits zero
+        # when it hits zero return endgame screen
+
+        self.myClock.tick(FPS)
+        ##pygame.display.flip()
+        """
         ob = self.get_obs(mode="single")
 
+        #infos = {'is_fallen': Tetris.is_fallen}
 
         return ob, end
 
@@ -1447,104 +1497,9 @@ class TetrisSingleEnv(TetrisEnv):
 
         ob, end = self.game_interface.act(action)
         ob, end = self.game_interface.act(0)
+        #ob, reward_noop, end, infos = self.game_interface.act(0)
 
         return ob, end
-
-
-num_weight = 7
-num_chromosome = 50
-
-""" 
-    A chromosome is a list that has 9 features and 1 score
-
-    Features:
-        height_sum
-        diff_sum
-        max_height
-        holes
-        cleared
-        n_used_block
-
-"""
-
-
-def get_random_cof(a, b):
-    return random.uniform(a, b)
-
-
-def random_chromosome():
-    chromosome = {
-        "height_sum": get_random_cof(-2, 0),
-        "diff_sum": get_random_cof(-2, 0),
-        "max_height": get_random_cof(-2, 0),
-        "holes": get_random_cof(-2, 0),
-        "cleared": get_random_cof(0, 2),
-        "n_used_block": get_random_cof(-2, 2),
-        #"relative_height": get_random_cof(-2, 2),
-        "eval": 0
-    }
-    return chromosome
-
-
-def best_score(chromosome):
-    return chromosome['eval']
-
-
-def cross_over(dad, mum, cross_over_rate=0.2):
-    child1 = deepcopy(dad)
-    child2 = deepcopy(mum)
-    for key, value in child1.items():
-        if key != "val" and random.random() < cross_over_rate:
-            child1[key] = mum[key]
-            child2[key] = dad[key]
-
-    return child1, child2
-
-
-def mutate(chromosome, mutate_rate=0.2):
-    chromosome_new = deepcopy(chromosome)
-    for key, value in chromosome_new.items():
-        if key != "val" and random.random() < mutate_rate:
-            chromosome_new[key] = get_random_cof(-1, 1)
-    return chromosome_new
-
-
-def selection(old_population):
-    index_1 = random.randint(0, num_chromosome - 1)
-    while True:
-        index_2 = random.randint(0, num_chromosome - 1)
-        if index_2 != index_1:
-            break
-    chosen_chromosome = old_population[index_1]
-    if old_population[index_2]['eval'] > old_population[index_1]['eval']:
-        chosen_chromosome = old_population[index_2]
-    return chosen_chromosome
-
-
-def create_new_population(old_population, chosen=26):
-    new_population = []
-    sorted_old_population = sorted(old_population, key=best_score)
-    while len(new_population) < num_chromosome - chosen:
-        # selection
-        chosen_chromosome_1 = selection(sorted_old_population)
-        chosen_chromosome_2 = selection(sorted_old_population)
-
-        # crossover
-        new_1, new_2 = cross_over(chosen_chromosome_1, chosen_chromosome_2)
-
-        # mutation
-        new_1_mu = mutate(new_1)
-        new_2_mu = mutate(new_2)
-
-        new_population.append(new_1_mu)
-        new_population.append(new_2_mu)
-
-    extra_index = num_chromosome - 1
-    while len(new_population) < num_chromosome:
-        new_population.append(sorted_old_population[extra_index])
-        extra_index -= 1
-
-    return new_population
 
 
 def initialize(obss):
@@ -1557,7 +1512,7 @@ def initialize(obss):
         for j in range(0, 10):
             row.append(obss[i][j][0])
         board.append(row[:])
-    print(board)
+
     for row in range(20):
         for i in range(10):
             if board[row][i] == 0.7 or board[row][i] == 0.3:
@@ -1586,6 +1541,58 @@ def initialize(obss):
     return new_board, holding, pieces
 
 
+def get_more_info(board):
+    heights = []
+    holes = []
+    for row in range(GRID_WIDTH):
+        height_row = 0
+        for col in range(GRID_DEPTH):
+            if board[row][col] == 1:
+                height_row = GRID_DEPTH - col
+                n_hol_in_col = 0
+                for col_hole in range(col + 1, GRID_DEPTH):
+                    if board[row][col_hole] == 0:
+                        n_hol_in_col += 1
+                holes.append(n_hol_in_col)
+                break
+        heights.append(height_row)
+
+    # height sum
+    height_sum = sum(heights)
+    # diff sum
+    diff_sum = 0
+    for i in range(1, len(heights)):
+        diff_sum += abs(heights[i] - heights[i - 1])
+
+    # height max
+    max_height = max(heights)
+
+    # holes sum
+    hole_sum = sum(holes)
+
+    # deepest unfilled
+    deepest_unfilled = min(heights)
+
+    # blocks count
+    blocks = 0
+    for row in board:
+        blocks += np.count_nonzero(np.array(row))
+    blocks /= 4
+
+    # col holes
+    col_holes = np.count_nonzero(np.array(holes))
+
+    # cleared
+    cleared_num = 0
+
+    # pit hole percent
+    pit = (GRID_WIDTH * GRID_DEPTH - height_sum)
+    pit_hole_percent = pit / (pit + hole_sum)
+
+    return [height_sum, diff_sum, max_height, hole_sum, deepest_unfilled,
+            blocks, col_holes, cleared_num, pit_hole_percent]
+
+
 def get_a_possible_move_list(right=0, left=0, rot_right=0, rot_left=0):
     a_possible_move_list = []
     for _ in range(rot_left):
@@ -1600,17 +1607,7 @@ def get_a_possible_move_list(right=0, left=0, rot_right=0, rot_left=0):
     return a_possible_move_list
 
 
-def get_max_minus_min(board):
-    height_col = [0]*10
-    for row in range(10):
-        for col in range(20):
-            if board[row][col] == 1:
-                height_col[row] = (20 - col)
-                break
-    return max(height_col)- min(height_col)
-
-
-def get_rating_from_move(board, nowblock, list_move, chromosome):
+def get_rating_from_move(board, nowblock, list_move, gen):
     env_copy = TetrisSingleEnv()
     state2 = env_copy.reset()
     env_copy.game_interface.Tetris_list[0]["Tetris"].grid = deepcopy(board)
@@ -1623,32 +1620,18 @@ def get_rating_from_move(board, nowblock, list_move, chromosome):
         if done:
             break
     b2, a2, c2 = initialize(state2)
-    Tetris_copy = env_copy.game_interface.Tetris_list[0]["Tetris"]
-    height_sum, diff_sum, max_height, holes = get_infos(b2)
-    # print(Tetris_copy.get_board())
-    info = dict()
-    info["cleared"] = Tetris_copy.cleared
-    info["height_sum"] = height_sum
-    info["max_height"] = max_height
-    info["holes"] = holes
-    info["diff_sum"] = diff_sum
-    info["n_used_block"] = Tetris_copy.n_used_block
-    #info["relative_height"] = get_max_minus_min(b2)
-    # print(info)
+    tetris_copy = env_copy.game_interface.Tetris_list[0]["Tetris"]
+    info = get_more_info(b2)
+    info[7] = tetris_copy.cleared*5  # cleared
     rating = 0
-    rating += chromosome['cleared'] * info['cleared']
-    rating += chromosome['height_sum'] * info['height_sum']
-    rating += chromosome['max_height'] * info['max_height']
-    rating += chromosome['holes'] * info['holes']
-    rating += chromosome['diff_sum'] * info['diff_sum']
-    rating += chromosome['n_used_block'] * info['n_used_block']
-    #rating += chromosome["relative_height"] * info["relative_height"]
+    for i in range(9):
+        rating += gen[i]*info[i]
     if done:
         rating -= 500
     return rating
 
 
-def get_best_move(board, nowblock, chromosome):
+def get_best_move(board, nowblock, gen):
     max_left = 4
     max_right = 3
     possible_move_lists = []
@@ -1656,67 +1639,67 @@ def get_best_move(board, nowblock, chromosome):
     if nowblock == 1:
         max_left = 4
         max_right = 2
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left))
-        for right in range(1, max_right+1):
+        for right in range(0, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right))
         """rotate right: 1"""
         max_left = 6
         max_right = 3
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_right=1))
-        for right in range(1, max_right+1):
+        for right in range(0, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_right=1))
     elif nowblock == 2:
         max_left = 5
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left))
-        for right in range(1, max_right+1):
+        for right in range(0, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right))
     elif nowblock == 3 or nowblock == 4 or nowblock == 7:
         """no rotate"""
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left))
-        for right in range(1, max_right+1):
+        for right in range(0, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right))
         """rotate left = 2"""
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_left=2))
-        for right in range(1, max_right+1):
+        for right in range(0, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_left=2))
         """ rotate left 1"""
         max_left = 4
         max_right = 4
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_left=1))
-        for right in range(1, max_right+1):
+        for right in range(0, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_left=1))
         """rotate right"""
         max_left = 5
         max_right = 3
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_right=1))
-        for right in range(1, max_right+1):
+        for right in range(0, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_right=1))
     elif nowblock == 5 or nowblock == 6:
         """no rotate"""
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left))
-        for right in range(1, max_right+1):
+        for right in range(0, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right))
         """rotate_right"""
         max_left = 5
         max_right = 3
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_right=1))
-        for right in range(1, max_right+1):
+        for right in range(0, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_right=1))
         """rotate left"""
         max_left = 4
         max_right = 4
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_left=1))
-        for right in range(1, max_right+1):
+        for right in range(0, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_left=1))
 
     """extra"""
@@ -1734,15 +1717,12 @@ def get_best_move(board, nowblock, chromosome):
         possible_move_lists.append(get_a_possible_move_list(right=i, rot_right=1))
     """
     best_list = []
-    print(possible_move_lists)
     best = -50000000000
 
     for cur_list in possible_move_lists:
         # env_copy = env.copy()
         # env will be copied in get_rating_from_move() function, so env local will be not changed
-        st = t.time()
-        cur_rating = get_rating_from_move(board, nowblock, cur_list, chromosome)
-        print(t.time() - st)
+        cur_rating = get_rating_from_move(board, nowblock, cur_list, gen)
         if cur_rating > best:
             best = cur_rating
             best_list = cur_list
@@ -1750,86 +1730,69 @@ def get_best_move(board, nowblock, chromosome):
     return best_list
 
 
-def eval_chromosome(chromosome):
-    env1 = TetrisSingleEnv()
-    state = env1.reset()
-    done = False
-    num_move_max = 500
-    num_move = 1
-    score = 0
-    board, holding, pieces = initialize(state)
-    now_block = pieces[0]
-    state, a1 = env1.step(1)
-    board, holding, pie = initialize(state)
-    check_combo = 0
-    while not done and num_move < num_move_max:
-        best_move_list = get_best_move(board=board, nowblock=now_block, chromosome=chromosome)
-        for action in best_move_list:
-            if action == 2:
-                board, holding, pieces = initialize(state)
-                now_block = pieces[0]
-            state, done = env1.step(action)
 
-        board, holding, pieces = initialize(state)
-        clear = env1.game_interface.Tetris_list[0]['Tetris'].cleared
-        if check_combo == 0 and clear >= 1:
-            check_combo += 1
-        if check_combo >= 1:
-            if clear >= 1:
-                check_combo += 1
-            else:
-                check_combo = 0
-        if check_combo >= 2:
-            print(check_combo)
-            score = score + check_combo*2
-        if clear >= 2:
-            print(clear)
-            score += clear * 2
-        elif clear == 1:
-            score += 1
-        num_move += 1
-        #print(done)
+class Agent:
+    def __init__(self, turn):
+        self.list_move = []
+        self.gen = [0.14656848647051968, -0.47777763373223125, -0.6555745669992836, -1.6386328872651454, -0.47058381771977853, 0.2670299008025454, -1.3615585370798318, 1.492955930575336, -1.2133566834515155, 13916, 15000, 10000]
 
-    chromosome['eval'] = score
+        self.first = 1
+        self.piece_now = 0
+
+    def choose_action(self, obs):
+        if self.first == 1:
+            self.first = self.first - 1
+            board, holding, pieces = initialize(obs)
+            self.piece_now = pieces[0]
+            return 1
+
+        if len(self.list_move) == 1:
+            board, holding, pieces = initialize(obs)
+            self.piece_now = pieces[0]
+
+        if len(self.list_move) == 0:
+            board, holding, pieces = initialize(obs)
+            self.list_move = get_best_move(board=board, nowblock=self.piece_now, gen=self.gen)
+        action = self.list_move.pop(0)
+        return action
 
 
-full_gen = []
-population = [random_chromosome() for _ in range(num_chromosome)]
-full_gen.append(population)
-filename = 'rs.json'
+
+
 
 """
-for generation_ in range(10):
+for nowblock in range(1, 8):
+    state = env_copy.reset()
+    board, a, b = initialize(state)
+    env_copy.game_interface.Tetris_list[0]["Tetris"].grid = deepcopy(board)
+    key = PIECE_NUM2TYPE[nowblock]
+    env_copy.game_interface.Tetris_list[0]["Tetris"].block = deepcopy(Piece(key, PIECES_DICT[key]))
+    state, done = env_copy.step(0)
+    state, done = env_copy.step(4)
 
-    print("Gen: ", generation_)
-    num = 1
-    for chromosome_ in population:
-        eval_chromosome(chromosome_)
-        print('\t', num, chromosome_)
-        num += 1
+    bo = []
+    for i in range(20):
+        row = []
+        for j in range(0, 10):
+            row.append(state[i][j][0])
+        bo.append(row[:])
+    print(bo,"\n")
+"""
 
-    population = create_new_population(population)
-    full_gen.append(population)
-
-with open(filename, 'w') as obj_file:
-    json.dump(population, obj_file, indent=2)
-
+"""
 start_time = t.time()
 env11 = TetrisSingleEnv()
 state = env11.reset()
 now_block = 1
-chromosome = {'height_sum': -1.9044895401339994, 'diff_sum': -0.3262308567522607,
+gen = {'height_sum': -1.9044895401339994, 'diff_sum': -0.3262308567522607,
               'max_height': -1.1880410493748155, 'holes': -1.8486670208765474,
               'cleared': 1.8800460868949906, 'n_used_block': -0.993451801560232, 'eval': 255}
 
 board, holding, pieces = initialize(state)
-best_move_list = get_best_move(board=board, nowblock=now_block, chromosome=chromosome)
+best_move_list = get_best_move(board=board, nowblock=now_block, gen=gen)
+
 
 print(t.time()-start_time)
 """
-start = t.time()
-envv = TetrisSingleEnv()
-state = envv.reset()
-envv.step(1)
-envv.step(2)
-print(t.time() - start)
+
+""" AGENT CLEAR X5"""

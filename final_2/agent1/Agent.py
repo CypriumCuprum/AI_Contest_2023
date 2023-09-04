@@ -1,7 +1,112 @@
-from settingsnew import *
 import numpy as np
 from copy import deepcopy
 import random
+
+
+START_IN_ROW = 4
+START_IN_COL = 2
+
+DEPTH_BOARD = 20
+WIDTH_BOARD = 10
+
+DEFAULT_GRID = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+]
+
+I_PIECES = [
+    [[1, 1, 1, 1]]
+    ,
+    [[1],
+     [1],
+     [1],
+     [1]]
+]
+
+O_PIECES = [
+    [[1, 1],
+     [1, 1]]
+]
+
+
+L_PIECES = [
+    [[0, 1],
+     [0, 1],
+     [1, 1]]
+    ,
+    [[1, 1, 1],
+     [0, 0, 1]]
+    ,
+    [[1, 1],
+     [1, 0],
+     [1, 0]]
+    ,
+    [[1, 0, 0],
+     [1, 1, 1]]
+]
+
+J_PIECES = [
+    [[1, 1],
+     [0, 1],
+     [0, 1]]
+    ,
+    [[1, 1, 1],
+     [1, 0, 0]]
+    ,
+    [[1, 0],
+     [1, 0],
+     [1, 1]]
+    ,
+    [[0, 0, 1],
+     [1, 1, 1]]
+]
+
+Z_PIECES = [
+    [[1, 0],
+     [1, 1],
+     [0, 1]]
+    ,
+    [[0, 1, 1],
+     [1, 1, 0]]
+]
+
+S_PIECES = [
+    [[0, 1],
+     [1, 1],
+     [1, 0]]
+    ,
+    [[1, 1, 0],
+     [0, 1, 1]]
+]
+
+T_PIECES = [
+    [[0, 1],
+     [1, 1],
+     [0, 1]]
+    ,
+    [[1, 1, 1],
+     [0, 1, 0]]
+    ,
+    [[1, 0],
+     [1, 1],
+     [1, 0]]
+    ,
+    [[0, 1, 0],
+     [1, 1, 1]]
+]
+
+NUM_PIECES = [1, 2, 3, 4, 5, 6, 7]
+MAP_NUM_PIECE = {1: I_PIECES, 2: S_PIECES, 3: O_PIECES, 4: Z_PIECES, 5: L_PIECES, 6: J_PIECES, 7: T_PIECES}
+PIECES_COLLECTION = I_PIECES + S_PIECES + O_PIECES + Z_PIECES + L_PIECES + J_PIECES + T_PIECES
+
 
 """
 A square matrix is easy to rotate. Just transpose to gain a 90 degrees rotate 
@@ -16,7 +121,7 @@ I: [[1,1,1,1]]
 T:
 [[0,1,0]        
  [1,1,1]]
- 
+
 [[0,1]
  [1,1] 
  [0,1]]
@@ -25,15 +130,15 @@ T:
 L:
 [[0,0,1]
  [1,1,1]]
- 
+
 J:
 [[1,0,0]
  [1,1,1]]
- 
+
 O:
 [[1,1]
  [1,1]]
- 
+
 Z:
 [[1,1,0]
  [0,1,1]]
@@ -121,7 +226,7 @@ def get_a_possible_move_list(right=0, left=0):
 """
 GRID SAMPLE
 
- 
+
  |   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
  |   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 
  |   [0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3], 
@@ -193,7 +298,7 @@ class Tetris:
         return new_board, self.done
 
     def rotate_right(self):
-        if self.sub_index_block == len(MAP_NUM_PIECE[self.index_block])-1:
+        if self.sub_index_block == len(MAP_NUM_PIECE[self.index_block]) - 1:
             self.sub_index_block = 0
         else:
             self.sub_index_block += 1
@@ -201,7 +306,7 @@ class Tetris:
 
     def rotate_left(self):
         if self.sub_index_block == 0:
-            self.sub_index_block = len(MAP_NUM_PIECE[self.index_block])-1
+            self.sub_index_block = len(MAP_NUM_PIECE[self.index_block]) - 1
         else:
             self.sub_index_block -= 1
         self.current_block = MAP_NUM_PIECE[self.index_block][self.sub_index_block]
@@ -307,8 +412,8 @@ class Tetris:
         cleared_num = self.cleared
 
         # pit hole percent
-        pit = (WIDTH_BOARD*DEPTH_BOARD - height_sum)
-        pit_hole_percent = pit/(pit+hole_sum)
+        pit = (WIDTH_BOARD * DEPTH_BOARD - height_sum)
+        pit_hole_percent = pit / (pit + hole_sum)
 
         return [height_sum, diff_sum, max_height, hole_sum, deepest_unfilled,
                 blocks, col_holes, cleared_num, pit_hole_percent]
@@ -317,15 +422,102 @@ class Tetris:
         max_left = self.px
         max_right = WIDTH_BOARD - self.px - len(self.current_block)
         full_move = []
-        for i in range(0, max_left+1):
+        for i in range(0, max_left + 1):
             full_move.append(get_a_possible_move_list(left=i))
-        for i in range(1, max_right+1):
+        for i in range(1, max_right + 1):
             full_move.append(get_a_possible_move_list(right=i))
         return full_move
 
-import time as t
-start = t.time()
-game = Tetris()
-for _ in range(10):
-    game.move(2)
-print(t.time()-start)
+
+def initialize(obss):
+    # initialize
+    grid = []
+    board = []
+    for i in range(20):
+        row = []
+        for j in range(0, 10):
+            row.append(obss[i][j][0])
+        board.append(row[:])
+    for i in range(10):
+        row = []
+        for j in range(20):
+            if board[j][i] == np.float32(0.7):
+                cell = 0
+            elif board[j][i] == np.float32(0.3):
+                cell = 3
+            else:
+                cell = int(board[j][i])
+            row.append(cell)
+        grid.append(row[:])
+    return grid
+
+
+def get_rating_from_move(tetris, list_move, gen):
+    new_tetris = deepcopy(tetris)
+    done = False
+    state_board = new_tetris.board
+    for one_move in list_move:
+        state_board, done = new_tetris.move(one_move)
+        if done == True:
+            break
+    info = new_tetris.get_info_from_state()
+    rating = 0
+    for i in range(len(info)):
+        rating += info[i]*gen[i]
+    if done:
+        rating -= 200
+    return rating
+
+
+def get_best_move(tetris, gen, rotate):
+    new_tetris = deepcopy(tetris)
+    possible_move_lists = new_tetris.get_possible_move()
+    best_list = []
+    best = -20000000000
+    for cur_list in possible_move_lists:
+        # env_copy = env.copy()
+        # env will be copied in get_rating_from_move() function, so env local will be not changed
+        cur_rating = get_rating_from_move(new_tetris, cur_list, gen)
+        if cur_rating > best:
+            best = cur_rating
+            best_list = deepcopy(cur_list)
+    if rotate == 3:
+        best_list.insert(0, 3)
+    else:
+        for _ in range(rotate):
+            best_list.insert(0, 4)
+    return best_list, best
+
+
+class Agent:
+    def __init__(self, turn):
+        self.list_move = []
+        self.gen = [-1.0150655977400342, -0.4588189688753319, -0.45142909382923824, -1.9065146902733137,
+                    -1.1887866153964457, -0.4847175587104995, -1.0223351901255786, 0.24865232045564412,
+                    0.2711459933466247, 1246, 500, 500, 500, 500, 500]
+        self.rotate_left = 0
+        self.best_score = -500000
+
+    def choose_action(self, obs):
+        if self.rotate_left < 4:
+            fixed_board = initialize(obs)
+            tetri_game = Tetris(fixed_board)
+            best_list, best = get_best_move(tetri_game, self.gen, self.rotate_left)
+            if best > self.best_score:
+                self.list_move = deepcopy(best_list)
+                self.best_score = best
+            self.rotate_left += 1
+            return 4
+        action = 0
+        if len(self.list_move) > 0:
+            action = self.list_move.pop(0)
+        if action == 2:
+            self.rotate_left = 0
+            self.best_score = -50000
+        return action
+
+
+
+
+
+

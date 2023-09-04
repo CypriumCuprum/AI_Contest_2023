@@ -1,4 +1,5 @@
 import random
+import time
 
 import numpy as np
 
@@ -6,7 +7,7 @@ from tetris_new import *
 
 
 num_chromosome = 9
-num_gen = 50
+num_gen = 500
 
 
 def get_random_cof(a, b):
@@ -44,6 +45,7 @@ def cross_over(dad, mum, cross_over_rate=0.3):
             child[i] = mum[i]
         else:
             child[i] = dad[i]
+    child[num_chromosome] = min(mum[num_chromosome], dad[num_chromosome])
     return child
 
 
@@ -155,7 +157,7 @@ def get_best_move(tetris, gen, rotate):
 
 def eval_gene(gene):
     game_tetris = Tetris()
-    max_move = 1000
+    max_move = 10000
     done = False
     cnt_move = 0
     eval = 0
@@ -174,15 +176,15 @@ def eval_gene(gene):
         for i in best_list:
             state, done = game_tetris.move(i)
         if game_tetris.cleared >= 2:
-            eval += game_tetris.cleared*2
+            eval += game_tetris.cleared
         eval += game_tetris.cleared
         cnt_move += 1
-    print(done)
-    gene[num_chromosome] = eval
+    gene[num_chromosome] += eval
+    gene.append(cnt_move)
 
 """
 population = [random_gen() for _ in range(num_gen)]
-for generation in range(50):
+for generation in range(20):
     print("Generation: ", generation)
 
     for gen in population:
@@ -191,10 +193,15 @@ for generation in range(50):
 
     population = create_new_population(population)
     print("\n")
+
+
 """
-gen = [-1.9738850422038139, -0.3121514179641651, -0.22779149775290009, -0.9007825699317653, 0.865363454241427, -1.7299656571382171, -1.860079695403609, 1.0248506041272176, -0.01729575962836094, 29]
+# height_sum, diff_sum, max_height, hole_sum, deepest_unfilled,
+#    blocks, col_holes, cleared_num, pit_hole_percent
+
+gen = [0.14656848647051968, -0.47777763373223125, -0.6555745669992836, -1.6386328872651454, -0.47058381771977853, 0.2670299008025454, -1.3615585370798318, 1.492955930575336, -1.2133566834515155, 8308, 15000]
 eval_gene(gen)
-print(gen[num_chromosome])
+print(gen)
 
 """
 TEST_GRID = [
