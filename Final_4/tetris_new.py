@@ -3,47 +3,6 @@ import numpy as np
 from copy import deepcopy
 import random
 
-"""
-A square matrix is easy to rotate. Just transpose to gain a 90 degrees rotate 
-TETROMINO SAMPLE
-suitable for the transposed board
-I: [[1,1,1,1]]
-[[1]
- [1]
- [1]
- [1]]
-
-T:
-[[0,1,0]        
- [1,1,1]]
- 
-[[0,1]
- [1,1] 
- [0,1]]
-
-
-L:
-[[0,0,1]
- [1,1,1]]
- 
-J:
-[[1,0,0]
- [1,1,1]]
- 
-O:
-[[1,1]
- [1,1]]
- 
-Z:
-[[1,1,0]
- [0,1,1]]
-
-S:
-[[0,1,1]
- [1,1,0]]
-
-"""
-
 
 def get_full_pos(piece):
     full_pos = []
@@ -140,10 +99,10 @@ class Tetris:
     def __init__(self, grid=DEFAULT_GRID):
         self.board = [[0 for j in range(DEPTH_BOARD)] for i in range(WIDTH_BOARD)]
         self.grid = grid
-        self.current_block = PIECES_COLLECTION[random.randint(0, len(PIECES_COLLECTION) - 1)]
-        self.index_block = 7
+        self.index_block = random.randint(1, 7)
+        self.current_block = MAP_NUM_PIECE[self.index_block][0]
         self.sub_index_block = 0
-        self.next_blocks = [1, 2, 3, 4, 5, 6, 7]
+        self.next_blocks = NUM_PIECES
         # Position default
         self.px = 4
         self.py = 0
@@ -156,7 +115,8 @@ class Tetris:
         }
 
         # Get block and its position from grid
-        self.get_infos_from_grid(self.grid)
+        if self.grid != DEFAULT_GRID:
+            self.get_infos_from_grid(self.grid)
 
         # cleared
         self.cleared = 0
@@ -193,17 +153,13 @@ class Tetris:
         return new_board, self.done
 
     def rotate_right(self):
-        if self.sub_index_block == len(MAP_NUM_PIECE[self.index_block])-1:
-            self.sub_index_block = 0
-        else:
-            self.sub_index_block += 1
+        self.sub_index_block += 1
+        self.sub_index_block %= 4
         self.current_block = MAP_NUM_PIECE[self.index_block][self.sub_index_block]
 
     def rotate_left(self):
-        if self.sub_index_block == 0:
-            self.sub_index_block = len(MAP_NUM_PIECE[self.index_block])-1
-        else:
-            self.sub_index_block -= 1
+        self.sub_index_block += 3
+        self.sub_index_block %= 4
         self.current_block = MAP_NUM_PIECE[self.index_block][self.sub_index_block]
 
     def move(self, action):
@@ -322,3 +278,5 @@ class Tetris:
         for i in range(1, max_right+1):
             full_move.append(get_a_possible_move_list(right=i))
         return full_move
+
+

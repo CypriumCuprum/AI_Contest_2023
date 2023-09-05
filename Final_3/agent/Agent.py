@@ -1547,7 +1547,7 @@ def get_more_info(board):
     for row in range(GRID_WIDTH):
         height_row = 0
         for col in range(GRID_DEPTH):
-            if board[row][col] == 1:
+            if board[row][col] > 0:
                 height_row = GRID_DEPTH - col
                 n_hol_in_col = 0
                 for col_hole in range(col + 1, GRID_DEPTH):
@@ -1622,7 +1622,7 @@ def get_rating_from_move(board, nowblock, list_move, gen):
     b2, a2, c2 = initialize(state2)
     tetris_copy = env_copy.game_interface.Tetris_list[0]["Tetris"]
     info = get_more_info(b2)
-    info[7] = tetris_copy.cleared*5  # cleared
+    info[7] = tetris_copy.cleared  # cleared
     rating = 0
     for i in range(9):
         rating += gen[i]*info[i]
@@ -1641,65 +1641,65 @@ def get_best_move(board, nowblock, gen):
         max_right = 2
         for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left))
-        for right in range(0, max_right+1):
+        for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right))
         """rotate right: 1"""
         max_left = 6
         max_right = 3
         for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_right=1))
-        for right in range(0, max_right+1):
+        for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_right=1))
     elif nowblock == 2:
         max_left = 5
         for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left))
-        for right in range(0, max_right+1):
+        for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right))
     elif nowblock == 3 or nowblock == 4 or nowblock == 7:
         """no rotate"""
         for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left))
-        for right in range(0, max_right+1):
+        for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right))
         """rotate left = 2"""
         for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_left=2))
-        for right in range(0, max_right+1):
+        for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_left=2))
         """ rotate left 1"""
         max_left = 4
         max_right = 4
         for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_left=1))
-        for right in range(0, max_right+1):
+        for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_left=1))
         """rotate right"""
         max_left = 5
         max_right = 3
         for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_right=1))
-        for right in range(0, max_right+1):
+        for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_right=1))
     elif nowblock == 5 or nowblock == 6:
         """no rotate"""
         for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left))
-        for right in range(0, max_right+1):
+        for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right))
         """rotate_right"""
         max_left = 5
         max_right = 3
         for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_right=1))
-        for right in range(0, max_right+1):
+        for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_right=1))
         """rotate left"""
         max_left = 4
         max_right = 4
         for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_left=1))
-        for right in range(0, max_right+1):
+        for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_left=1))
 
     """extra"""
@@ -1796,3 +1796,15 @@ print(t.time()-start_time)
 """
 
 """ AGENT CLEAR X5"""
+
+"""
+            0: "NOOP",
+            1: "hold",
+            2: "drop",
+            3: "rotate_right",
+            4: "rotate_left",
+            5: "right",
+            6: "left",
+            7: "down"
+            PIECE_NUM2TYPE = {1: 'I', 2: 'O', 3: 'J', 4: 'L', 5: 'Z', 6: 'S', 7: 'T', 8: 'G'}
+"""

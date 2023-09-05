@@ -1685,21 +1685,21 @@ def get_best_move(board, nowblock, gen):
         """no rotate"""
         for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left))
-        for right in range(0, max_right+1):
+        for right in range(0, max_right):
             possible_move_lists.append(get_a_possible_move_list(right=right))
         """rotate_right"""
         max_left = 5
         max_right = 3
         for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_right=1))
-        for right in range(0, max_right+1):
+        for right in range(0, max_right):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_right=1))
         """rotate left"""
         max_left = 4
         max_right = 4
         for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_left=1))
-        for right in range(0, max_right+1):
+        for right in range(0, max_right):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_left=1))
 
     """extra"""

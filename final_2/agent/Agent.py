@@ -373,7 +373,7 @@ class Tetris:
         for row in range(WIDTH_BOARD):
             height_row = 0
             for col in range(DEPTH_BOARD):
-                if self.board[row][col] == 1:
+                if self.board[row][col] > 0:
                     height_row = DEPTH_BOARD - col
                     n_hol_in_col = 0
                     for col_hole in range(col + 1, DEPTH_BOARD):
@@ -409,7 +409,7 @@ class Tetris:
         col_holes = np.count_nonzero(np.array(holes))
 
         # cleared
-        cleared_num = self.cleared
+        cleared_num = self.cleared-1
 
         # pit hole percent
         pit = (WIDTH_BOARD * DEPTH_BOARD - height_sum)
@@ -492,7 +492,7 @@ def get_best_move(tetris, gen, rotate):
 class Agent:
     def __init__(self, turn):
         self.list_move = []
-        self.gen = [-1.3102745737267214, -0.6242034265122209, -0.01353979396793048, -1.8486670208765474, 0, 0, 0, 1.822646282925221, 0, 0]
+        self.gen = [0.14656848647051968, -0.47777763373223125, -0.6555745669992836, -1.6386328872651454, -0.47058381771977853, 0.2670299008025454, -1.3615585370798318, 1.492955930575336, -1.2133566834515155, 13916, 15000, 10000]
         self.rotate_left = 0
         self.best_score = -500000
 
@@ -515,7 +515,7 @@ class Agent:
         return action
 
 
-
+# test -1 cleared
 
 
 

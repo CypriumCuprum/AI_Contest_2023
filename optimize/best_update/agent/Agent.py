@@ -1600,83 +1600,68 @@ def get_best_move(board, nowblock, chromosome):
     if nowblock == 1:
         max_left = 4
         max_right = 2
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left))
         for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right))
         """rotate right: 1"""
         max_left = 6
         max_right = 3
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_right=1))
         for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_right=1))
     elif nowblock == 2:
         max_left = 5
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left))
         for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right))
     elif nowblock == 3 or nowblock == 4 or nowblock == 7:
         """no rotate"""
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left))
         for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right))
         """rotate left = 2"""
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_left=2))
         for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_left=2))
         """ rotate left 1"""
         max_left = 4
         max_right = 4
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_left=1))
         for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_left=1))
         """rotate right"""
         max_left = 5
         max_right = 3
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_right=1))
         for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_right=1))
     elif nowblock == 5 or nowblock == 6:
         """no rotate"""
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left))
         for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right))
         """rotate_right"""
         max_left = 5
         max_right = 3
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_right=1))
         for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_right=1))
         """rotate left"""
         max_left = 4
         max_right = 4
-        for left in range(1, max_left+1):
+        for left in range(0, max_left+1):
             possible_move_lists.append(get_a_possible_move_list(left=left, rot_left=1))
         for right in range(1, max_right+1):
             possible_move_lists.append(get_a_possible_move_list(right=right, rot_left=1))
-
-    """extra"""
-    """
-    for i in range(1, max_left):
-        possible_move_lists.append(get_a_possible_move_list(left=i))
-        possible_move_lists.append(get_a_possible_move_list(left=i, rot_left=1))
-        possible_move_lists.append(get_a_possible_move_list(left=i, rot_left=2))
-        possible_move_lists.append(get_a_possible_move_list(left=i, rot_right=1))
-
-    for i in range(1, max_right):
-        possible_move_lists.append(get_a_possible_move_list(right=i))
-        possible_move_lists.append(get_a_possible_move_list(right=i, rot_left=1))
-        possible_move_lists.append(get_a_possible_move_list(right=i, rot_left=2))
-        possible_move_lists.append(get_a_possible_move_list(right=i, rot_right=1))
-    """
     best_list = []
     best = -50000000000
 

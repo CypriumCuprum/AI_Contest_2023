@@ -1827,9 +1827,3 @@ best_move_list = get_best_move(board=board, nowblock=now_block, chromosome=chrom
 
 print(t.time()-start_time)
 """
-start = t.time()
-envv = TetrisSingleEnv()
-state = envv.reset()
-envv.step(1)
-envv.step(2)
-print(t.time() - start)
