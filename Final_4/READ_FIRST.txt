@@ -1,0 +1,4 @@
+Agent in this folder is the same env about 99%
+
+If the block is changed in the environment, we need change the data of blocks in the settingsnew file and in the Agent.
+

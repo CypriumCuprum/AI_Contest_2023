@@ -465,13 +465,13 @@ class Agent:
     def choose_action(self, obs):
         if self.first == 1:
             board, holding, pieces = initialize(obs)
-            self.list_block = pieces[:3]
+            self.list_block = pieces[:2]
             self.first = 0
             return 1
 
         if len(self.list_move) == 1:
             board, holding, pieces = initialize(obs)
-            self.list_block = pieces[:3]
+            self.list_block = pieces[:2]
 
         if len(self.list_move) == 0:
             board, holding, pieces = initialize(obs)
@@ -480,10 +480,5 @@ class Agent:
         action = self.list_move.pop(0)
         return action
 
-import time
-start = time.time()
-b = [[0 for i in range(DEPTH_BOARD)] for j in range(WIDTH_BOARD)]
-gen2 = [-0.45871856486636053, -0.3211088438566083, -0.5221084651717414, -1.4317746855089484, -0.8248875964891864, 1.856227466507848, -1.59595104909416, 0.7765780163107312, 1.8598908998668202, 2001, 500, 500]
-list_block = [3, 3, 5]
-print(get_best_move(b, list_block, gen2))
-print(time.time() - start)
+# GOOD
+# DON'T CHANGE IT

@@ -102,17 +102,10 @@ class Tetris:
         self.index_block = random.randint(1, 7)
         self.current_block = MAP_NUM_PIECE[self.index_block][0]
         self.sub_index_block = 0
-        self.next_blocks = NUM_PIECES
+        self.next_blocks = [1, 2, 3]
         # Position default
         self.px = 4
         self.py = 0
-
-        # define action
-        self.action_meaning = {
-            2: "drop",
-            5: "right",
-            6: "left"
-        }
 
         # Get block and its position from grid
         if self.grid != DEFAULT_GRID:

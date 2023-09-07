@@ -148,13 +148,6 @@ class Tetris:
         self.px = 4
         self.py = 0
 
-        # define action
-        self.action_meaning = {
-            2: "drop",
-            5: "right",
-            6: "left"
-        }
-
         # Get block and its position from grid
         self.get_infos_from_grid(self.grid)
 

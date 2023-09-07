@@ -1,0 +1,3 @@
+Agent in this folder is for a block which is given in the state.
+
+The tetris game is suitable for this type agent
