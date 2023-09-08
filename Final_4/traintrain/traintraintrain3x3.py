@@ -29,10 +29,16 @@ ipieces = [[[0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0]],
           [[0, 0, 0, 0], [0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0]],
           [[0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0], [0, 1, 0, 0]],
           [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]]]
+"""
 opieces = [[[0, 0, 0, 0], [0, 1, 1, 0], [0, 1, 1, 0], [0, 0, 0, 0]],
           [[0, 0, 0, 0], [0, 1, 1, 0], [0, 1, 1, 0], [0, 0, 0, 0]],
           [[0, 0, 0, 0], [0, 1, 1, 0], [0, 1, 1, 0], [0, 0, 0, 0]],
           [[0, 0, 0, 0], [0, 1, 1, 0], [0, 1, 1, 0], [0, 0, 0, 0]]]
+"""
+opieces = [[[0, 1, 1, 1], [0, 1, 1, 1], [0, 1, 1, 1], [0, 0, 0, 0]],
+          [[0, 1, 1, 1], [0, 1, 1, 1], [0, 1, 1, 1], [0, 0, 0, 0]],
+          [[0, 1, 1, 1], [0, 1, 1, 1], [0, 1, 1, 1], [0, 0, 0, 0]],
+          [[0, 1, 1, 1], [0, 1, 1, 1], [0, 1, 1, 1], [0, 0, 0, 0]]]
 jpieces = [[[0, 1, 1, 0], [0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 0, 0]],
           [[0, 0, 0, 0], [0, 1, 1, 1], [0, 1, 0, 0], [0, 0, 0, 0]],
           [[0, 0, 1, 0], [0, 0, 1, 0], [0, 0, 1, 1], [0, 0, 0, 0]],
@@ -128,17 +134,10 @@ class Tetris:
         self.index_block = random.randint(1, 7)
         self.current_block = MAP_NUM_PIECE[self.index_block][0]
         self.sub_index_block = 0
-        self.next_blocks = NUM_PIECES
+        self.next_blocks = [1, 2, 3, 4, 5, 6, 7]
         # Position default
         self.px = 4
         self.py = 0
-
-        # define action
-        self.action_meaning = {
-            2: "drop",
-            5: "right",
-            6: "left"
-        }
 
         # cleared
         self.cleared = 0
@@ -147,11 +146,11 @@ class Tetris:
         self.done = False
 
     def new_block(self):
-        if len(self.next_blocks) == 0:
+        self.index_block = self.next_blocks.pop(0)
+        if self.next_blocks == []:
             blocks = deepcopy(NUM_PIECES)
             random.shuffle(blocks)
-            self.next_blocks = deepcopy(blocks)
-        self.index_block = self.next_blocks.pop(0)
+            self.next_blocks = blocks[:]
         self.sub_index_block = 0
         self.current_block = MAP_NUM_PIECE[self.index_block][self.sub_index_block]
         self.px = 4
@@ -351,38 +350,40 @@ def get_possible_move_lists(possible_move_lists, nowblock):
         elif nowblock == 2:
             max_left = 5
             max_right = 3
+            """
             for left in range(0, max_left + 1):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(left=left))
-            for right in range(1, max_right + 1):
-                newpossible_movelists.append(new_item + get_a_possible_move_list(right=right))
+            for right in range(1, max_right +1):
+            """
+            newpossible_movelists.append(new_item + get_a_possible_move_list(right=max_right))
         elif nowblock == 3 or nowblock == 4 or nowblock == 7:
             """no rotate"""
             max_left = 4
             max_right = 3
             for left in range(0, max_left + 1):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(left=left))
-            for right in range(1, max_right + 1):
+            for right in range(1, max_right -2):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(right=right))
             """rotate left = 2"""
             max_left = 4
             max_right = 3
             for left in range(0, max_left + 1):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(left=left, rot_left=2))
-            for right in range(1, max_right + 1):
+            for right in range(1, max_right -2):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(right=right, rot_left=2))
             """ rotate left 1"""
             max_left = 4
             max_right = 4
             for left in range(0, max_left + 1):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(left=left, rot_left=1))
-            for right in range(1, max_right + 1):
+            for right in range(1, max_right -2):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(right=right, rot_left=1))
             """rotate right"""
             max_left = 5
             max_right = 3
             for left in range(0, max_left + 1):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(left=left, rot_right=1))
-            for right in range(1, max_right + 1):
+            for right in range(1, max_right -2):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(right=right, rot_right=1))
         elif nowblock == 5 or nowblock == 6:
             """no rotate"""
@@ -390,21 +391,21 @@ def get_possible_move_lists(possible_move_lists, nowblock):
             max_right = 3
             for left in range(0, max_left + 1):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(left=left))
-            for right in range(1, max_right + 1):
+            for right in range(1, max_right -2):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(right=right))
             """rotate_right"""
             max_left = 5
             max_right = 3
             for left in range(0, max_left + 1):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(left=left, rot_right=1))
-            for right in range(1, max_right + 1):
+            for right in range(1, max_right -2):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(right=right, rot_right=1))
             """rotate left"""
             max_left = 4
             max_right = 4
             for left in range(0, max_left + 1):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(left=left, rot_left=1))
-            for right in range(1, max_right + 1):
+            for right in range(1, max_right -2):
                 newpossible_movelists.append(new_item + get_a_possible_move_list(right=right, rot_left=1))
     return newpossible_movelists
 
@@ -426,8 +427,12 @@ def get_rating_from_move(board, list_block, list_move, gen):
             break
     info = game_check.get_info_from_state()
     rating = 0
+    if game_check.cleared == 1:
+        rating -= 0
     for i in range(len(info)):
         rating += info[i]*gen[i]
+    if info[2] + extra_height >= 16:
+        rating -= 200
     if done:
         rating -= 200
     return rating
@@ -450,28 +455,154 @@ def get_best_move(board, list_block, gen):
     return best_list
 
 
-class Agent:
-    def __init__(self, turn):
-        self.list_move = []
-        self.gen = [-0.45871856486636053, -0.3211088438566083, -0.5221084651717414, -1.4317746855089484, -0.8248875964891864, 1.856227466507848, -1.59595104909416, 0.7765780163107312, 1.8598908998668202, 2001, 500, 500]
-        self.list_block = [1]
-        self.best_score = -500000
-        self.first = 1
+# _________________________________________________GENERATIONNN_____________________________________________
+num_chromosome = 9
+num_gen = 250
 
-    def choose_action(self, obs):
-        if self.first == 1:
-            board, holding, pieces = initialize(obs)
-            self.list_block = pieces[:2]
-            self.first = 0
-            return 1
 
-        if len(self.list_move) == 1:
-            board, holding, pieces = initialize(obs)
-            self.list_block = pieces[:2]
+def get_random_cof(a, b):
+    return random.uniform(a, b)
 
-        if len(self.list_move) == 0:
-            board, holding, pieces = initialize(obs)
-            self.list_move = get_best_move(board, self.list_block, self.gen)
 
-        action = self.list_move.pop(0)
-        return action
+def random_gen():
+    gen = []
+    """
+    height_sum, diff_sum, max_height, hole_sum, deepest_unfilled,
+    blocks, col_holes, cleared_num, pit_hole_percent
+    """
+    gen.append(get_random_cof(-2, 0))  # height_sum              0
+    gen.append(get_random_cof(-2, 0))  # diff_dum                1
+    gen.append(get_random_cof(-2, 0))  # max_height              2
+    gen.append(get_random_cof(-2, 0))  # hole_sum                3
+    gen.append(get_random_cof(-2, 2))  # deepest_unfilled        4
+    gen.append(get_random_cof(-2, 2))  # blocks                  5
+    gen.append(get_random_cof(-2, 0))  # col_holes               6
+    gen.append(get_random_cof(0, 2))  # cleared_num              7
+    gen.append(get_random_cof(-2, 2))  # pit_hole_percent        8
+    # score
+    gen.append(0)
+    # move
+    gen.append(0)
+    return gen
+
+
+def best_score(gen):
+    return gen[num_chromosome]
+
+
+def cross_over(dad, mum, cross_over_rate=0.3):
+    child = random_gen()
+    for i in range(num_chromosome):
+        if random.random() < cross_over_rate:
+            child[i] = mum[i]
+        else:
+            child[i] = dad[i]
+    child[num_chromosome] = min(mum[num_chromosome], dad[num_chromosome])
+    child[num_chromosome + 1] = min(mum[num_chromosome+1], dad[num_chromosome+1])
+    return child
+
+
+def mutate(gen, mutate_rate=0.3):
+    gen_new = deepcopy(gen)
+    for i in range(num_chromosome):
+        if random.random() < mutate_rate:
+            if i == 4 or i == 5 or i == 8:
+                gen_new[i] = get_random_cof(-2, 2)
+            elif i == 7:
+                gen_new[i] = get_random_cof(0, 2)
+            else:
+                gen_new[i] = get_random_cof(-2, 0)
+    return gen_new
+
+
+def selection(old_population, rate=0.4):
+    sorted_old_population = list(reversed(sorted(old_population, key=best_score)))
+    num_chosen = int(num_gen*rate)
+    new_population = sorted_old_population[:num_chosen]
+    return new_population
+
+
+def create_new_population(old_population):
+    new_population = selection(old_population)
+    now_length = len(new_population)
+    while len(new_population) < num_gen:
+        # choose mom and dad
+        index_1 = random.randint(0, now_length-1)
+        index_2 = random.randint(0, now_length-1)
+        while index_2 == index_1:
+            index_2 = random.randint(0, now_length-1)
+
+        mum = new_population[index_1]
+        dad = new_population[index_2]
+
+        # crossover
+        child = cross_over(mum, dad)
+
+        # mutation
+        child_mutation = mutate(child)
+
+        # add to new population
+        new_population.append(child_mutation)
+
+    return new_population
+
+
+max_move = 200
+def eval_gene(gene):
+    game_tetris = Tetris()
+
+    done = False
+    cnt_move = 0
+    evaluate = 0
+    lines_cleared_1 = 0
+    lines_cleared_2 = 0
+    lines_cleared_3 = 0
+    lines_cleared_4 = 0
+
+    while not done and cnt_move < max_move:
+        cnt_move += 1
+        board = deepcopy(game_tetris.board)
+        list_block = [game_tetris.index_block] + [game_tetris.next_blocks[0]]
+        list_move = get_best_move(board, list_block, gene)
+        for one_move in list_move:
+            board, done = game_tetris.move(one_move)
+            if done:
+                break
+        #print(np.transpose(board))
+        if game_tetris.cleared == 1:
+            lines_cleared_1 += 1
+        if game_tetris.cleared == 2:
+            lines_cleared_2 += 1
+            evaluate += 4
+        if game_tetris.cleared == 3:
+            lines_cleared_3 += 1
+            evaluate += 7
+        if game_tetris.cleared == 4:
+            lines_cleared_4 += 1
+            evaluate += 11
+    print(lines_cleared_1)
+    print(lines_cleared_2)
+    print(lines_cleared_3)
+    print(lines_cleared_4)
+    gene[num_chromosome] += evaluate
+    gene[num_chromosome+1] += cnt_move
+
+"""
+population = [random_gen() for _ in range(num_gen)]
+
+for gen in range(10):
+
+    print("Generation: ", gen)
+    for gene in population:
+        eval_gene(gene)
+        print(gene)
+    population = create_new_population(population)
+    max_move += 400
+    print("\n")
+"""
+
+# NOW BLOCK IS 3x3
+
+gen = [-0.45871856486636053, -0.3211088438566083, -0.5221084651717414, -1.4317746855089484, -0.8248875964891864,
+            1.856227466507848, -1.59595104909416, 0.7765780163107312, 1.8598908998668202, 2001, 500, 500]
+eval_gene(gen)
